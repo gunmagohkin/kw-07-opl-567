@@ -308,7 +308,7 @@ export default function SlideViewer({
                   <ImageWithFallback
                     src={currentEntry.beforeImage}
                     alt="Before improvement"
-                    className="w-full h-48 sm:h-64 lg:h-72 object-cover rounded-lg shadow-md group-hover:shadow-lg transition-shadow duration-300"
+                    className="w-full h-70 sm:h-70 lg:h-72 object-cover rounded-lg shadow-md group-hover:shadow-lg transition-shadow duration-300"
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300 rounded-lg"></div>
                 </div>
@@ -324,7 +324,7 @@ export default function SlideViewer({
                   <ImageWithFallback
                     src={currentEntry.afterImage}
                     alt="After improvement"
-                    className="w-full h-48 sm:h-64 lg:h-72 object-cover rounded-lg shadow-md group-hover:shadow-lg transition-shadow duration-300"
+                    className="w-full h-70 sm:h-70 lg:h-72 object-cover rounded-lg shadow-md group-hover:shadow-lg transition-shadow duration-300"
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300 rounded-lg"></div>
                 </div>
