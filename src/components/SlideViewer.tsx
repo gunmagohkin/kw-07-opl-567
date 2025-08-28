@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState } from 'react';
 import {
   ChevronLeft,
   ChevronRight,
@@ -88,7 +88,7 @@ const ImageWithFallback = ({
   if (imageError || !src) {
     return (
       <div
-        className={`${className} bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300`}
+        className={`${className} bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300 min-h-[200px]`}
       >
         <div className="text-center text-gray-500">
           <ImageOff className="w-12 h-12 mx-auto mb-2" />
@@ -108,7 +108,7 @@ const ImageWithFallback = ({
     <div className="relative">
       {imageLoading && (
         <div
-          className={`${className} bg-gray-200 animate-pulse flex items-center justify-center`}
+          className={`${className} bg-gray-200 animate-pulse flex items-center justify-center min-h-[200px]`}
         >
           <div className="text-gray-500">Loading...</div>
         </div>
@@ -135,38 +135,6 @@ export default function SlideViewer({
 }: SlideViewerProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isCompleting, setIsCompleting] = useState(false);
-
-  // Touch/Swipe handling
-  const touchStartX = useRef<number>(0);
-  const touchEndX = useRef<number>(0);
-  const minSwipeDistance = 50;
-
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    touchStartX.current = e.targetTouches[0].clientX;
-  }, []);
-
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    touchEndX.current = e.targetTouches[0].clientX;
-  }, []);
-
-  const handleTouchEnd = useCallback(() => {
-    if (!touchStartX.current || !touchEndX.current) return;
-
-    const distance = touchStartX.current - touchEndX.current;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
-
-    if (isLeftSwipe && currentSlide < entries.length - 1) {
-      handleNext();
-    }
-    if (isRightSwipe && currentSlide > 0) {
-      handlePrevious();
-    }
-
-    // Reset touch positions
-    touchStartX.current = 0;
-    touchEndX.current = 0;
-  }, [currentSlide, entries.length]);
 
   const handleNext = () => {
     if (currentSlide < entries.length - 1) {
@@ -228,12 +196,7 @@ export default function SlideViewer({
   }
 
   return (
-    <div
-      className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50"
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-    >
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       {/* Header */}
       <div className="bg-white shadow-sm border-b p-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
@@ -295,7 +258,7 @@ export default function SlideViewer({
             </p>
           </div>
 
-           {/* Images Section */}
+          {/* Images Section */}
           <div className="p-4 sm:p-6">
             <div className="grid gap-6 lg:grid-cols-2">
               {/* Before Section */}
