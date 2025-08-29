@@ -19,16 +19,16 @@ export default function InputForm({ onSubmit }: InputFormProps) {
 
   const handleIdNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    // Only allow digits and limit to 8 characters
-    const digitsOnly = value.replace(/\D/g, '').slice(0, 8);
-    setIdNumber(digitsOnly);
+    // Limit to 8 characters (any characters allowed)
+    const limitedValue = value.slice(0, 8);
+    setIdNumber(limitedValue);
     
     // Clear any previous error when user starts typing
     if (error) setError('');
   };
 
   const isValidIdNumber = (id: string) => {
-    return /^\d{8}$/.test(id);
+    return id.length === 8;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,7 +36,7 @@ export default function InputForm({ onSubmit }: InputFormProps) {
     setError('');
     
     if (!isValidIdNumber(idNumber)) {
-      setError('ID Number must be exactly 8 digits.');
+              setError('ID Number must be exactly 8 characters.');
       return;
     }
     
@@ -92,15 +92,14 @@ export default function InputForm({ onSubmit }: InputFormProps) {
                     ? 'border-red-300 bg-red-50' 
                     : 'border-gray-300'
                 }`}
-                placeholder="Enter 8-digit ID number"
+                placeholder="Enter 8-character ID"
                 maxLength={8}
-                inputMode="numeric"
                 required
               />
             </div>
             {idNumber && !isValidIdNumber(idNumber) && (
               <p className="text-red-600 text-sm mt-1">
-                ID must be exactly 8 digits ({idNumber.length}/8 digits entered)
+                ID must be exactly 8 characters ({idNumber.length}/8 characters entered)
               </p>
             )}
           </div>
