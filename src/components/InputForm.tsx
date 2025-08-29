@@ -28,7 +28,7 @@ export default function InputForm({ onSubmit }: InputFormProps) {
   };
 
   const isValidIdNumber = (id: string) => {
-    return id.length === 8;
+    return id.length === 8 && (id.charAt(0).toUpperCase() === 'L' || id.charAt(0).toUpperCase() === 'C');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -92,14 +92,17 @@ export default function InputForm({ onSubmit }: InputFormProps) {
                     ? 'border-red-300 bg-red-50' 
                     : 'border-gray-300'
                 }`}
-                placeholder="Enter 8-character ID"
+                placeholder="Enter 8-character ID (L or C + 7 chars)"
                 maxLength={8}
                 required
               />
             </div>
             {idNumber && !isValidIdNumber(idNumber) && (
               <p className="text-red-600 text-sm mt-1">
-                ID must be exactly 8 characters ({idNumber.length}/8 characters entered)
+                {idNumber.length !== 8 
+                  ? `ID must be exactly 8 characters (${idNumber.length}/8 characters entered)`
+                  : `ID must start with 'L' or 'C' (current: '${idNumber.charAt(0)}')`
+                }
               </p>
             )}
           </div>
