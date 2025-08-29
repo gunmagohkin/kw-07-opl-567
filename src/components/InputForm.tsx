@@ -17,23 +17,42 @@ export default function InputForm({ onSubmit }: InputFormProps) {
   const [isChecking, setIsChecking] = useState(false);
   const [error, setError] = useState('');
 
+  const handleIdNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Only allow digits and limit to 8 characters
+    const digitsOnly = value.replace(/\D/g, '').slice(0, 8);
+    setIdNumber(digitsOnly);
+    
+    // Clear any previous error when user starts typing
+    if (error) setError('');
+  };
+
+  const isValidIdNumber = (id: string) => {
+    return /^\d{8}$/.test(id);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     
-    if (idNumber.trim() && selectedMonth) {
+    if (!isValidIdNumber(idNumber)) {
+      setError('ID Number must be exactly 8 digits.');
+      return;
+    }
+    
+    if (selectedMonth) {
       setIsChecking(true);
       
       try {
-        const isAlreadyUsed = await checkIdAlreadyUsed(idNumber.trim(), selectedMonth);
+        const isAlreadyUsed = await checkIdAlreadyUsed(idNumber, selectedMonth);
         
         if (isAlreadyUsed) {
-          setError(`ID ${idNumber.trim()} has already completed viewing entries for ${selectedMonth}. Each ID can only view entries once per month.`);
+          setError(`ID ${idNumber} has already completed viewing entries for ${selectedMonth}. Each ID can only view entries once per month.`);
           setIsChecking(false);
           return;
         }
         
-        onSubmit(idNumber.trim(), selectedMonth);
+        onSubmit(idNumber, selectedMonth);
       } catch (error) {
         setError('Unable to verify ID usage. Please check your internet connection and try again.');
         console.error('Error checking ID usage:', error);
@@ -43,7 +62,7 @@ export default function InputForm({ onSubmit }: InputFormProps) {
     }
   };
 
-  const isValid = idNumber.trim() && selectedMonth && !isChecking;
+  const isValid = isValidIdNumber(idNumber) && selectedMonth && !isChecking;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
@@ -67,12 +86,23 @@ export default function InputForm({ onSubmit }: InputFormProps) {
                 type="text"
                 id="idNumber"
                 value={idNumber}
-                onChange={(e) => setIdNumber(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-800"
-                placeholder="Enter your ID number"
+                onChange={handleIdNumberChange}
+                className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-800 ${
+                  idNumber && !isValidIdNumber(idNumber) 
+                    ? 'border-red-300 bg-red-50' 
+                    : 'border-gray-300'
+                }`}
+                placeholder="Enter 8-digit ID number"
+                maxLength={8}
+                inputMode="numeric"
                 required
               />
             </div>
+            {idNumber && !isValidIdNumber(idNumber) && (
+              <p className="text-red-600 text-sm mt-1">
+                ID must be exactly 8 digits ({idNumber.length}/8 digits entered)
+              </p>
+            )}
           </div>
 
           <div className="relative">
